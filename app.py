@@ -228,6 +228,82 @@ with tab2:
     st.divider()
 
     st.header("Key Insights")
-    st.info("Dynamic insights will be implemented in Issue #6.")
+
+    if filtered_df.empty:
+        st.info("No insights available for the selected filters.")
+
+    elif analysis_type == "Content Distribution":
+        counts = filtered_df["type"].value_counts()
+        total = len(filtered_df)
+
+        if len(counts) == 1:
+            selected_type = counts.index[0]
+
+            st.write(
+                f"The current selection contains **{total:,} "
+                f"{selected_type.lower()} titles**."
+            )
+
+            st.info(
+                "Content type comparison is unavailable because "
+                "only one content type is included in the current selection."
+            )
+
+        else:
+            top_type = counts.idxmax()
+            top_count = int(counts.max())
+            percentage = top_count / total * 100
+
+            st.write(
+                f"**{top_type}** is the most common content type, "
+                f"representing **{percentage:.1f}%** "
+                f"of the {total:,} filtered titles."
+            )
+
+    elif analysis_type == "Release Year Trends":
+        counts = filtered_df["release_year"].value_counts()
+        peak_year = int(counts.idxmax())
+        peak_count = int(counts.max())
+
+        min_year = int(filtered_df["release_year"].min())
+        max_year = int(filtered_df["release_year"].max())
+
+        st.write(
+            f"**{peak_year}** has the highest number of titles "
+            f"with **{peak_count:,} releases**."
+        )
+
+        st.write(
+            f"The selected titles were released between "
+            f"**{min_year} and {max_year}**."
+        )
+
+    elif analysis_type == "Top 10 Genres":
+        genres = (
+            filtered_df["listed_in"]
+            .dropna()
+            .str.split(",")
+            .explode()
+            .str.strip()
+        )
+
+        counts = genres[genres != ""].value_counts()
+
+        if counts.empty:
+            st.info("No genre information is available.")
+        else:
+            top_genre = counts.idxmax()
+            top_count = int(counts.max())
+            percentage = top_count / len(filtered_df) * 100
+
+            st.write(
+                f"**{top_genre}** is the most common genre, "
+                f"appearing in **{top_count:,} titles**."
+            )
+
+            st.write(
+                f"This represents **{percentage:.1f}%** "
+                f"of the filtered titles."
+            )
 
 
