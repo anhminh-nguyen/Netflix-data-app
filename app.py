@@ -7,7 +7,7 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("Netflix Data Analytics Dashboard")
+
 
 @st.cache_data
 def load_data():
@@ -15,35 +15,44 @@ def load_data():
 
 df = load_data()
 
-st.header("Dataset Overview")
 
-st.write("This dataset contains information about Netflic movies and TV shows")
+st.title("🎬 Netflix Data Analytics Dashboard")
 
-col1, col2 = st.columns(2)
-
-with col1:
-    st.metric("Total Records", len(df))
-
-with col2:
-    st.metric("Total Columns", len(df.columns))
-
-# Display dataset
-st.header("Netflix Dataset")
-st.dataframe(df, use_container_width=True)
-
-# Dataset information
-st.header("Dataset Information")
-
-st.subheader("Column Names")
-st.write(df.columns.tolist())
-
-st.subheader("Missing Values")
-st.dataframe(
-    df.isnull().sum().reset_index(
-        name="Missing Values"
-    ).rename(columns={"index": "Column"})
+st.write(
+    "Explore and understand Netflix's movies and TV shows "
+    "catalog through interactive data visualization."
 )
 
-st.subheader("Data Types")
-st.write(df.dtypes.astype(str))
+tab1, tab2 = st.tabs([
+    "📋 Overview",
+    "📊 Data Visualization & Insights"
+])
+
+with tab1:
+    st.header("About the Dataset")
+
+    st.write(
+        "This dataset contains Netflix movies and TV shows, "
+        "including genres, release years, countries, and ratings."
+    )
+
+    col1, col2 = st.columns(2)
+    col1.metric("Total Records", len(df))
+    col2.metric("Total Columns", len(df.columns))
+
+    st.subheader("Available Columns")
+    st.write(", ".join(df.columns))
+
+    st.subheader("Dataset Preview")
+    st.dataframe(df, use_container_width=True)
+
+with tab2:
+    st.header("Data Visualization")
+    st.info("Interactive charts will be implemented in Issues #4 and #5.")
+
+    st.divider()
+
+    st.header("Key Insights")
+    st.info("Dynamic insights will be implemented in Issue #6.")
+
 
